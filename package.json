@@ -1,0 +1,32 @@
+{
+  "name": "express-mesto",
+  "version": "1.0.0",
+  "description": "Проект 'Mesto'",
+  "homepage": "https://github.com/dizhukova/express-mesto",
+  "main": "app.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dizhukova/express-mesto.git"
+  },
+  "keywords": [],
+  "author": "Diana Zhukova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dizhukova/express-mesto/issues"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.13.7"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.0",
+    "nodemon": "^2.0.12"
+  }
+}
