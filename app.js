@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const usersRoute = require('./routes/users');
+const cardsRoute = require('./routes/cards');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -23,8 +25,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
+app.use('/users', usersRoute);
+app.use('/cards', cardsRoute);
 
 app.listen(PORT, () => {
   console.log('Запустились!!!!');
