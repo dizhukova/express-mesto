@@ -20,7 +20,12 @@ module.exports.getUserById = (req, res) => {
       }
     })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(ERROR_CODE_500).send({ message: `Произошла ошибка: ${err.message}` }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_CODE_400).send({ message: 'Переданы некорректные данные.' });
+      }
+      res.status(ERROR_CODE_500).send({ message: `Произошла ошибка: ${err.message}` });
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -45,7 +50,6 @@ module.exports.updateUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
     .then((user) => {
@@ -72,7 +76,6 @@ module.exports.updateUserAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
     .then((user) => {
