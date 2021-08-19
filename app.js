@@ -28,6 +28,4 @@ app.use((req, res, next) => {
 app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);
 
-app.listen(PORT, () => {
-  console.log('Запустились!!!!');
-});
+app.listen(PORT);
