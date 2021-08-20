@@ -48,7 +48,15 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => { // почему здесь нужно обрабатывать ошибку 404?
+      // eslint-disable-next-line max-len
+      // по заданию видела только 400 — Переданы некорректные данные для постановки/снятии лайка и  500 — Ошибка по умолчанию.
+      if (card === null) {
+        res.status(ERROR_CODE_404).send({ message: 'Карточка с указанным _id не найдена.' });
+      } else {
+        res.send({ data: card });
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODE_400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
@@ -63,7 +71,13 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card === null) {
+        res.status(ERROR_CODE_404).send({ message: 'Карточка с указанным _id не найдена.' });
+      } else {
+        res.send({ data: card });
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(ERROR_CODE_400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
