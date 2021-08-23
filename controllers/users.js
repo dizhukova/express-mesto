@@ -44,6 +44,24 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (user === null) {
+        res.status(ERROR_CODE_404).send({ message: 'Пользователь по указанному _id не найден.' });
+      } else {
+        res.send({ data: user });
+      }
+    })
+    .then((user) => res.send({ data: user }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_CODE_400).send({ message: 'Переданы некорректные данные.' });
+      }
+      res.status(ERROR_CODE_500).send({ message: `Произошла ошибка: ${err.message}` });
+    });
+};
+
 module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
