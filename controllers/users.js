@@ -61,7 +61,6 @@ module.exports.getCurrentUser = (req, res, next) => {
         res.send({ data: user });
       }
     })
-    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные.');
@@ -89,7 +88,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании пользователя.');
+        throw new BadRequestError('BBBПереданы некорректные данные при создании пользователя.');
       } else if (err.name === 'MongoError' && err.code === 11000) {
         throw new ConflictError('Этот email уже зарегистрирован.');
       } else {
@@ -119,7 +118,7 @@ module.exports.updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении профиля.');
+        throw new BadRequestError('CCCCПереданы некорректные данные при обновлении профиля.');
       }
       next(err);
     })
@@ -146,7 +145,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении аватара.');
+        throw new BadRequestError('XXXXПереданы некорректные данные при обновлении аватара.');
       }
       next(err);
     })

@@ -59,7 +59,7 @@ app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);
 
 app.use('/*', () => {
-  throw new NotFoundError({ message: 'Ресурс не найден' });
+  throw new NotFoundError('Ресурс не найден');
 });
 
 app.use(errors());
