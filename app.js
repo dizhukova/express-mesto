@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
@@ -11,14 +11,16 @@ const usersRoute = require('./routes/users');
 const cardsRoute = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const error = require('./middlewares/error');
+
 const NotFoundError = require('./errors/not-found-err'); // 404
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // за 15 минут
-  max: 100, // можно совершить максимум 100 запросов с одного IP
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 
 app.use(limiter);
@@ -40,10 +42,14 @@ app.post('/signin', celebrate({
     password: Joi.string().required().min(8),
   }),
 }), login);
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+    avatar: Joi.string().required().pattern(/https?:\/\/(www\.)?[a-zA-Z0-9\-.]{1,}\.[a-z]{1,5}([/a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=]*)/),
   }),
 }), createUser);
 
@@ -56,12 +62,7 @@ app.use('/*', () => {
   throw new NotFoundError({ message: 'Ресурс не найден' });
 });
 
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-
-  res.status(statusCode).send({ message: statusCode === 500 ? 'На сервере произошла ошибка' : `Произошла ошибка: ${message}` });
-
-  next();
-});
+app.use(errors());
+app.use(error);
 
 app.listen(PORT);
