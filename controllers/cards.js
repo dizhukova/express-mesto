@@ -26,18 +26,17 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (card === null) {
         throw new NotFoundError('Карточка с указанным _id не найдена.');
       }
-
       if (card.owner.toString() !== req.user._id) {
-        next(new ForbiddenError('Недостаточно прав для удаления карточки.'));
-        return;
+        Card.deleteOne(card)
+          .then(() => res.send({ data: card }));
+      } else {
+        throw new ForbiddenError('Недостаточно прав для удаления карточки.');
       }
-      card.deleteOne();
-      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
