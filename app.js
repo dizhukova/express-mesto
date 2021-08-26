@@ -12,10 +12,10 @@ const cardsRoute = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const NotFoundError = require('./errors/not-found-err'); // 404
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 const limiter = rateLimit({
@@ -35,6 +35,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
+
+app.use(requestLogger);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -58,11 +60,13 @@ app.use(auth);
 app.use('/users', usersRoute);
 app.use('/cards', cardsRoute);
 
-app.use('/*', () => {
-  throw new NotFoundError('Ресурс не найден');
-});
+app.use(errorLogger);
 
 app.use(errors());
 app.use(error);
 
-app.listen(PORT);
+app.use('/*', () => {
+  throw new NotFoundError('Ресурс не найден');
+});
+
+module.exports = app;
